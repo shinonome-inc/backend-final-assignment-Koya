@@ -7,10 +7,6 @@ User = get_user_model()
 
 class TestSignupView(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(
-            username="tester",
-            password="testpassword",
-        )
         self.url = reverse("accounts:signup")
 
     def test_success_get(self):
@@ -36,7 +32,6 @@ class TestSignupView(TestCase):
         )
 
         self.assertTrue(User.objects.filter(username=valid_data["username"]).exists())
-
         self.assertIn(SESSION_KEY, self.client.session)
 
     def test_failure_post_with_empty_form(self):
@@ -44,10 +39,8 @@ class TestSignupView(TestCase):
         response = self.client.post(self.url, invalid_data)
         form = response.context["form"]
 
-        print(response.context)
-        print(response.context["form"])
-        print(form.errors)
-
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(User.objects.filter(username=invalid_data["username"]).exists())
         self.assertFalse(form.is_valid())
         self.assertIn("このフィールドは必須です。", form.errors["username"])
         self.assertIn("このフィールドは必須です。", form.errors["email"])
@@ -65,10 +58,6 @@ class TestSignupView(TestCase):
         response = self.client.post(self.url, invalid_data)
         form = response.context["form"]
 
-        print(response.context)
-        print(response.context["form"])
-        print(form.errors)
-
         self.assertFalse(form.is_valid())
         self.assertIn("このフィールドは必須です。", form.errors["username"])
 
@@ -83,12 +72,11 @@ class TestSignupView(TestCase):
         response = self.client.post(self.url, invalid_data)
         form = response.context["form"]
 
-        print(response.context)
-        print(response.context["form"])
-        print(form.errors)
-
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(User.objects.filter(username=invalid_data["username"]).exists())
         self.assertFalse(form.is_valid())
         self.assertIn("このフィールドは必須です。", form.errors["email"])
+
 
     def test_failure_post_with_empty_password(self):
         invalid_data = {
@@ -101,15 +89,17 @@ class TestSignupView(TestCase):
         response = self.client.post(self.url, invalid_data)
         form = response.context["form"]
 
-        print(response.context)
-        print(response.context["form"])
-        print(form.errors)
-
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(User.objects.filter(username=invalid_data["username"]).exists())
         self.assertFalse(form.is_valid())
         self.assertIn("このフィールドは必須です。", form.errors["password1"])
         self.assertIn("このフィールドは必須です。", form.errors["password2"])
 
     def test_failure_post_with_duplicated_user(self):
+        self.user = User.objects.create_user(
+            username="tester",
+            password="testpassword",
+        )
         invalid_data = {
             "username": "tester",
             "email": "test@test.com",
