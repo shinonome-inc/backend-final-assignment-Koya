@@ -27,7 +27,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = "accounts.User"
+# accountsフォルダの中にUserというモデルを作成したので、acccounts.Userと記述する。
+# もし、MyUserという名前のモデルで作成していたら、accounts.MyUserとする。
 
+# 最終課題ではならないが、usersというフォルダの中にUserというモデルを作成した場合は
+# AUTH_USER_MODEL = "users.User" となる
 # Application definition
 
 INSTALLED_APPS = [
@@ -57,7 +62,7 @@ ROOT_URLCONF = "mysite.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
