@@ -9,18 +9,15 @@
 <body>
   <!-- header -->
   <header class="mb-3">
+    <ul>
+      <li><a href="{% url 'welcome:welcome' %}">Twitter Clone</a></li>
     {% if user.is_authenticated %}
-    <nav>
-      <ul>
-        <li><a href="{% url 'welcome:welcome' %}">Twitter Clone</a></li>
-        <li><a href="{% url 'accounts:logout' %}">logout</a></li>
-      </ul>
-    </nav>
+    <li><a href="{% url 'accounts:logout' %}">logout</a></li>
     {% else %}
     <li><a href="{% url 'accounts:signup' %}">Sign up</a></li>
-    <li><a href="{% url 'welcome:welcome' %}">Twitter Clone</a></li>
     <li><a href="{% url 'accounts:login' %}">login</a></li>
     {% endif %}
+  </ul>
   </header>
   <!-- /header -->
 
