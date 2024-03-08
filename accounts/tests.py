@@ -242,10 +242,10 @@ class TestLogoutView(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             username="testuser",
-            password="testpassword",
+            password="testpasword",
         )
 
-        self.client.login(username="testuser", password="testpassword")
+        self.client.login(username="testuser", password="testpssword")
 
     def test_success_post(self):
         response = self.client.post(reverse("accounts:logout"))
