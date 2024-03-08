@@ -1,8 +1,9 @@
 from django.conf import settings
-from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView, DetailView
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, TemplateView
+
 from .forms import SignupForm
 
 
@@ -20,5 +21,5 @@ class SignupView(CreateView):
         return response
 
 
-class UserProfileView(LoginRequiredMixin, DetailView):
+class UserProfileView(LoginRequiredMixin, TemplateView):
     template_name = "accounts/userprofile.html"
