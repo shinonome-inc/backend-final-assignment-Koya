@@ -10,9 +10,10 @@
   <!-- header -->
   <header class="mb-3">
     <ul>
-      <li><a href="{% url 'welcome:welcome' %}">Twitter Clone</a></li>
+      <li><a href="{% url 'tweets:home' %}">Twitter Clone</a></li>
     {% if user.is_authenticated %}
     <li><a href="{% url 'accounts:logout' %}">logout</a></li>
+    <li><a href="{% url 'tweets:create' %}">Create Tweet</a></li>
     {% else %}
     <li><a href="{% url 'accounts:signup' %}">Sign up</a></li>
     <li><a href="{% url 'accounts:login' %}">login</a></li>
