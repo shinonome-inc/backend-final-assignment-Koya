@@ -18,6 +18,7 @@ class TestHomeView(TestCase):
         url = reverse("tweets:home")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+        self.assertQuerysetEqual(response.context["object_list"], Tweet.objects.all())
 
 
 class TestTweetCreateView(TestCase):
