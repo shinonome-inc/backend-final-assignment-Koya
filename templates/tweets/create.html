@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}login{% endblock %}
+
+{% block content %}
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <p><button type="submit">ツイートする</button></p>
+</form>
+{% endblock %}

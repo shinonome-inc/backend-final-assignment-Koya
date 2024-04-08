@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<h2>{{ profile_user }}のページ</h2>
+    <br>
+    <h3>過去のツイート</h3>
+{% for tweet in object_list %}
+        <p>[内容]
+            <br>{{tweet.content}}
+        </p>
+        <a href="{% url 'tweets:detail' tweet.pk %}">詳細</a>
+{% endfor %}
+{% endblock %}
