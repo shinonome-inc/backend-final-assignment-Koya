@@ -2,7 +2,21 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 <h2>{{ profile_user }}のページ</h2>
-    <br>
+{% if profile_user != request.user %}
+{% if profile_user not in user_following %}
+  <form method="post" action="{% url 'accounts:follow' username=profile_user.username %}">
+    {% csrf_token %}
+    <button type="submit">フォロー</button>
+  </form>
+  {% else %}
+  <form method="post" action="{% url 'accounts:unfollow' username=profile_user.username %}">
+    {% csrf_token %}
+    <button type="submit">フォローを解除</button>
+  </form>
+  {% endif %}
+{% endif %}
+<a href="{% url 'accounts:following_list' username=profile_user %}"><p>フォロー数：{{following_number}}</p></a>
+<a href="{% url 'accounts:follower_list' username=profile_user %}"><p>フォロワー数：{{follower_number}}</p></a>
     <h3>過去のツイート</h3>
 {% for tweet in object_list %}
         <p>[内容]

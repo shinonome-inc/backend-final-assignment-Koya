@@ -1,0 +1,10 @@
+{% for user in user_list %}
+  <div>
+    <p>{{ user.username }}</p>
+    <form action="{% url 'accounts:follow'user.username %}" method="post">
+      {% csrf_token %}
+      <input type="hidden" name="user_id" value="{{ user.id }}">
+      <button type="submit">フォローする</button>
+    </form>
+  </div>
+{% endfor %}
