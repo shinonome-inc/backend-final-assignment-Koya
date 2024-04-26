@@ -7,8 +7,15 @@
 <h1>ツイート一覧</h1>
 <ul>
     {% for tweet in tweets %}
-        <li>{{ tweet.content }}</li>
-    {% endfor %}
+    <!-- <div class="tweet"> -->
+        <p>{{ tweet.content }}</p>
+        <!-- <button class="like-button" data-tweet-id="{{ tweet.id }}" data-is-liked="false">いいね</button> -->
+    </div>
+{% endfor %}
 </ul>
 {% endblock %}
 </form>
+
+<!-- {% block javascript %}
+<script src="{% static 'js/main.js' %}"></script>
+{% endblock %} -->

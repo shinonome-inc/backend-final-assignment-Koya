@@ -5,6 +5,10 @@ from django.views.generic import CreateView, DeleteView, DetailView, ListView
 
 from tweets.forms import CreateTweetForm
 
+# from django.http import JsonResponse
+# from django.views.decorators.csrf import csrf_exempt
+# from django.utils.decorators import method_decorator
+
 from .models import Tweet
 
 
@@ -37,3 +41,29 @@ class TweetDeleteView(LoginRequiredMixin, DeleteView):
     template_name = "tweets/delete.html"
     model = Tweet
     success_url = reverse_lazy(settings.LOGIN_REDIRECT_URL)
+
+
+# class LikeView(LoginRequiredMixin, View):
+#     templete_nane = "tweets/home.html"
+
+#     @method_decorator(csrf_exempt)
+#     def dispatch(self, *args, **kwargs):
+#         return super().dispatch(*args, **kwargs)
+
+#     def post(self, request, pk):
+#         tweet = Tweet.objects.get(pk=pk)
+#         tweet.likes.add(request.user)
+#         return JsonResponse({"status": "ok"})
+
+
+# class UnlikeView(LoginRequiredMixin, View):
+#     templete_nane = "tweets/home.html"
+
+#     @method_decorator(csrf_exempt)
+#     def dispatch(self, *args, **kwargs):
+#         return super().dispatch(*args, **kwargs)
+
+#     def post(self, request, pk):
+#         tweet = Tweet.objects.get(pk=pk)
+#         tweet.likes.remove(request.user)
+#         return JsonResponse({"status": "ok"})

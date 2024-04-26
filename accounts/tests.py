@@ -289,10 +289,10 @@ class TestFollowView(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(username="testuser", password="testpassword")
         self.user2 = get_user_model().objects.create_user(username="tester", password="testpassword")
-        self.client.login(username="testuser", password="testpassword")
+        self.client.force_login(self.user)
 
     def test_success_post(self):
-        response = self.client.post(reverse("accounts:follow", kwargs={"username": "tester"}))
+        response = self.client.post(reverse("accounts:follow", kwargs={"username": self.user2.username}))
         self.assertRedirects(
             response,
             reverse("tweets:home"),
