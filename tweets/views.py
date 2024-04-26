@@ -5,11 +5,12 @@ from django.views.generic import CreateView, DeleteView, DetailView, ListView
 
 from tweets.forms import CreateTweetForm
 
+from .models import Tweet
+
 # from django.http import JsonResponse
 # from django.views.decorators.csrf import csrf_exempt
 # from django.utils.decorators import method_decorator
 
-from .models import Tweet
 
 
 class HomeView(LoginRequiredMixin, ListView):
