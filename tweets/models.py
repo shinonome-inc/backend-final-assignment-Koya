@@ -1,6 +1,6 @@
 from django.db import models
 
-# from django.conf import settings
+from django.conf import settings
 
 
 class Tweet(models.Model):
@@ -12,9 +12,9 @@ class Tweet(models.Model):
         return f"{self.user.username} - {self.content} ({self.created_at})"
 
 
-# class Like(models.Model):
-#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-#     tweet = models.ForeignKey(Tweet, on_delete=models.CASCADE)
+class Like(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    tweet = models.ForeignKey(Tweet, on_delete=models.CASCADE)
 
-#     class Meta:
-#         unique_together = ("user", "tweet")
+    class Meta:
+        unique_together = ("user", "tweet")
