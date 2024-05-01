@@ -49,10 +49,10 @@ class UserProfileView(LoginRequiredMixin, ListView):
 class FollowView(LoginRequiredMixin, View):
     def post(self, request, username):
         following_user = get_object_or_404(User, username=username)
-        is_follwing = Friendship.objects.filter(follower=request.user, following=following_user).exists()
+        is_following = Friendship.objects.filter(follower=request.user, following=following_user).exists()
         if request.user == following_user:
             return HttpResponseBadRequest("自分自身をフォローすることはできません")
-        elif is_follwing:
+        elif is_following:
             return HttpResponseBadRequest("すでにフォローしています")
         else:
             follow_instance = Friendship(follower=request.user, following=following_user)
