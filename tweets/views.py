@@ -11,6 +11,8 @@ from .models import Tweet
 # from django.http import JsonResponse
 # from django.views.decorators.csrf import csrf_exempt
 # from django.utils.decorators import method_decorator
+
+
 class HomeView(LoginRequiredMixin, ListView):
     template_name = "tweets/home.html"
     model = Tweet
@@ -18,6 +20,11 @@ class HomeView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Tweet.objects.select_related("user").order_by("created_at")
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context["liked_tweets"] = self.request.user.tweet_set.all()
+    #     return context
 
 
 class TweetCreateView(LoginRequiredMixin, CreateView):
