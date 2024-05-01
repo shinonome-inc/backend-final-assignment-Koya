@@ -4,12 +4,17 @@
 
 {% block content %}
 <h1>homeです</h1>
-<li><a href="{% url 'accounts:user_profile' request.user %}">あなたのプロフィール</a></li>
 <h1>ツイート一覧</h1>
 <ul>
     {% for tweet in tweets %}
-        <li>{{ tweet.content }}</li>
+    <!-- <div class="tweet"> -->
+        <p>{{ tweet.content }}</p>
+    </div>
     {% endfor %}
 </ul>
 {% endblock %}
 </form>
+
+<!-- {% block javascript %}
+<script src="{% static 'js/main.js' %}"></script>
+{% endblock %} -->

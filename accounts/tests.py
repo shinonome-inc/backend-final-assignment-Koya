@@ -3,6 +3,7 @@ from django.contrib.auth import SESSION_KEY, get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
+from accounts.models import Friendship
 from tweets.models import Tweet
 
 User = get_user_model()
@@ -284,25 +285,88 @@ class TestUserProfileView(TestCase):
 #     def test_failure_post_with_incorrect_user(self):
 
 
-# class TestFollowView(TestCase):
-#     def test_success_post(self):
+class TestFollowView(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(username="testuser", password="testpassword")
+        self.user2 = get_user_model().objects.create_user(username="tester", password="testpassword")
+        self.client.force_login(self.user)
 
-#     def test_failure_post_with_not_exist_user(self):
+    def test_success_post(self):
+        response = self.client.post(reverse("accounts:follow", kwargs={"username": self.user2.username}))
+        self.assertRedirects(
+            response,
+            reverse("tweets:home"),
+            status_code=302,
+            target_status_code=200,
+        )
+        self.assertTrue(Friendship.objects.filter(follower=self.user, following=self.user2).exists())
 
-#     def test_failure_post_with_self(self):
+    def test_failure_post_with_not_exist_user(self):
+        response = self.client.post(reverse("accounts:follow", kwargs={"username": "nonexistent_user"}))
+        self.assertEqual(response.status_code, 404)
+        self.assertFalse(Friendship.objects.filter(follower=self.user).exists())
+
+    def test_failure_follow_self(self):
+        response = self.client.post(reverse("accounts:follow", kwargs={"username": self.user.username}))
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(Friendship.objects.filter(follower=self.user, following=self.user).exists())
 
 
-# class TestUnfollowView(TestCase):
-#     def test_success_post(self):
+class TestUnfollowView(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(username="testuser", password="testpassword")
+        self.user2 = get_user_model().objects.create_user(username="tester", password="testpassword")
+        self.client.login(username="testuser", password="testpassword")
+        # Add this line to setup a following relationship
+        Friendship.objects.create(follower=self.user, following=self.user2)
 
-#     def test_failure_post_with_not_exist_tweet(self):
+    def test_success_post(self):
+        response = self.client.post(reverse("accounts:unfollow", kwargs={"username": self.user2.username}))
+        self.assertRedirects(
+            response,
+            reverse("tweets:home"),
+            status_code=302,
+            target_status_code=200,
+        )
+        self.assertFalse(Friendship.objects.filter(follower=self.user, following=self.user2).exists())
 
-#     def test_failure_post_with_incorrect_user(self):
+    def test_failure_post_with_not_exist_user(self):
+        response = self.client.post(reverse("accounts:unfollow", kwargs={"username": "nonexistent_user"}))
+        self.assertEqual(response.status_code, 404)
+        self.assertTrue(Friendship.objects.filter(follower=self.user, following=self.user2).exists())
+
+    def test_failure_post_with_incorrect_user(self):
+        user_to_unfollow = get_user_model().objects.create_user(username="user_to_unfollow", password="testpassword")
+        response = self.client.post(reverse("accounts:unfollow", kwargs={"username": user_to_unfollow.username}))
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(Friendship.objects.filter(follower=self.user, following=self.user2).exists())
 
 
-# class TestFollowingListView(TestCase):
-#     def test_success_get(self):
+class TestFollowingListView(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(username="testuser", password="testpassword")
+        self.user2 = get_user_model().objects.create_user(username="tester", password="testpassword")
+        self.user3 = get_user_model().objects.create_user(username="tester2", password="testpassword")
+        self.client.login(username="testuser", password="testpassword")
+        self.friendship1 = Friendship.objects.create(follower=self.user, following=self.user2)
+        self.friendship2 = Friendship.objects.create(follower=self.user, following=self.user3)
+
+    def test_success_get(self):
+        response = self.client.get(reverse("accounts:following_list", kwargs={"username": self.user.username}))
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(list(response.context["following_list"]), [self.friendship1, self.friendship2])
 
 
-# class TestFollowerListView(TestCase):
-#     def test_success_get(self):
+class TestFollowerListView(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(username="testuser", password="testpassword")
+        self.user2 = get_user_model().objects.create_user(username="tester", password="testpassword")
+        self.user3 = get_user_model().objects.create_user(username="tester2", password="testpassword")
+        self.client.login(username="testuser", password="testpassword")
+        Friendship.objects.create(follower=self.user2, following=self.user)
+        Friendship.objects.create(follower=self.user3, following=self.user)
+
+    def test_success_get(self):
+        response = self.client.get(reverse("accounts:follower_list", kwargs={"username": self.user.username}))
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(list(response.context["follower_list"]), Friendship.objects.all())

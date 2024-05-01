@@ -7,6 +7,10 @@ from tweets.forms import CreateTweetForm
 
 from .models import Tweet
 
+# from django.http import JsonResponse
+# from django.views.decorators.csrf import csrf_exempt
+# from django.utils.decorators import method_decorator
+
 
 class HomeView(LoginRequiredMixin, ListView):
     template_name = "tweets/home.html"
@@ -15,6 +19,11 @@ class HomeView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Tweet.objects.select_related("user").order_by("created_at")
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context["liked_tweets"] = self.request.user.tweet_set.all()
+    #     return context
 
 
 class TweetCreateView(LoginRequiredMixin, CreateView):
@@ -37,3 +46,29 @@ class TweetDeleteView(LoginRequiredMixin, DeleteView):
     template_name = "tweets/delete.html"
     model = Tweet
     success_url = reverse_lazy(settings.LOGIN_REDIRECT_URL)
+
+
+# class LikeView(LoginRequiredMixin, View):
+#     templete_nane = "tweets/home.html"
+
+#     @method_decorator(csrf_exempt)
+#     def dispatch(self, *args, **kwargs):
+#         return super().dispatch(*args, **kwargs)
+
+#     def post(self, request, pk):
+#         tweet = Tweet.objects.get(pk=pk)
+#         tweet.likes.add(request.user)
+#         return JsonResponse({"status": "ok"})
+
+
+# class UnlikeView(LoginRequiredMixin, View):
+#     templete_nane = "tweets/home.html"
+
+#     @method_decorator(csrf_exempt)
+#     def dispatch(self, *args, **kwargs):
+#         return super().dispatch(*args, **kwargs)
+
+#     def post(self, request, pk):
+#         tweet = Tweet.objects.get(pk=pk)
+#         tweet.likes.remove(request.user)
+#         return JsonResponse({"status": "ok"})
