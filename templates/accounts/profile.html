@@ -21,6 +21,7 @@
 {% for tweet in object_list %}
         <p>[内容]
             <br>{{tweet.content}}
+            <p id="like-count-{{ tweet.id }}">{{ tweet.like_count }} 件のいいね</p>
         </p>
         <a href="{% url 'tweets:detail' tweet.pk %}">詳細</a>
 {% endfor %}

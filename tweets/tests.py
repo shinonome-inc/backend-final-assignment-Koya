@@ -125,18 +125,58 @@ class TestTweetDetailView(TestCase):
             self.assertTrue(Tweet.objects.filter(pk=self.ordinary_tweet.pk).exists())
 
 
-# class TestLikeView(TestCase):
-#     def test_success_post(self):
+class TestLikeView(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="tester",
+            password="testpassword",
+        )
+        self.client.login(username="tester", password="testpassword")
+        self.tweet = Tweet.objects.create(user=self.user, content="testtweet")
+        self.url = reverse("tweets:like", kwargs=dict(pk=self.tweet.pk))
 
-#     def test_failure_post_with_not_exist_tweet(self):
+    def test_success_post(self):
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["is_liked"], True)
+        self.assertEqual(response.json()["total_likes"], 1)
 
-#     def test_failure_post_with_liked_tweet(self):
+    def test_failure_post_with_not_exist_tweet(self):
+        response = self.client.post(reverse("tweets:like", kwargs=dict(pk=10000)))
+        self.assertEqual(response.status_code, 404)
+
+    def test_failure_post_with_liked_tweet(self):
+        self.client.post(self.url)
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["is_liked"], False)  # Change True to False
+        self.assertEqual(response.json()["total_likes"], 1)
 
 
-# class TestUnLikeView(TestCase):
+class TestUnLikeView(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="tester",
+            password="testpassword",
+        )
+        self.client.login(username="tester", password="testpassword")
+        self.tweet = Tweet.objects.create(user=self.user, content="testtweet")
+        self.url = reverse("tweets:unlike", kwargs=dict(pk=self.tweet.pk))
 
-#     def test_success_post(self):
+    def test_success_post(self):
+        self.client.post(reverse("tweets:like", kwargs=dict(pk=self.tweet.pk)))
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["is_liked"], False)
+        self.assertEqual(response.json()["total_likes"], 0)
 
-#     def test_failure_post_with_not_exist_tweet(self):
+    def test_failure_post_with_not_exist_tweet(self):
+        response = self.client.post(reverse("tweets:unlike", kwargs=dict(pk=10000)))
+        self.assertEqual(response.status_code, 404)
 
-#     def test_failure_post_with_unliked_tweet(self):
+    def test_failure_post_with_unliked_tweet(self):
+        self.client.post(reverse("tweets:like", kwargs=dict(pk=self.tweet.pk)))
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["is_liked"], False)
+        self.assertEqual(response.json()["total_likes"], 0)

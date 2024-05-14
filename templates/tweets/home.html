@@ -1,20 +1,21 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}title{% endblock %}
-
 {% block content %}
 <h1>homeです</h1>
 <h1>ツイート一覧</h1>
 <ul>
     {% for tweet in tweets %}
-    <!-- <div class="tweet"> -->
+    <div class="tweet">
         <p>{{ tweet.content }}</p>
+        <p id="like-count-{{ tweet.id }}">{{ tweet.like_count }} 件のいいね</p>
+        {% if tweet.liked_by_user %}
+        <button type="button" class="like-button" id="like-button-{{ tweet.id }}" data-tweet-id="{{ tweet.id }}" data-liked="true">いいね取り消し</button>
+        {% else %}
+        <button type="button" class="like-button" id="like-button-{{ tweet.id }}" data-tweet-id="{{ tweet.id }}" data-liked="false">いいね</button>
+        {% endif %}
     </div>
     {% endfor %}
 </ul>
+{% include "tweets/script.html" %}
 {% endblock %}
-</form>
-
-<!-- {% block javascript %}
-<script src="{% static 'js/main.js' %}"></script>
-{% endblock %} -->
