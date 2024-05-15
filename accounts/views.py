@@ -1,15 +1,16 @@
 from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Count
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, ListView
-from tweets.models import Like
+
 from accounts.models import Friendship, User
-from tweets.models import Tweet
-from django.db.models import Count
+from tweets.models import Like, Tweet
+
 from .forms import SignupForm
 
 
