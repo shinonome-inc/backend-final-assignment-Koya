@@ -21,11 +21,16 @@
     {% for tweet in tweets %}
     <div class="tweet">
         <p>{{ tweet.content }}</p>
+        <a href="{% url 'tweets:detail' tweet.pk %}">詳細</a>
         <p id="like-count-{{ tweet.id }}">{{ tweet.like_count }} 件のいいね</p>
         {% if tweet.liked_by_user %}
-        <button type="button" class="like-button" id="like-button-{{ tweet.id }}" data-tweet-id="{{ tweet.id }}" data-liked="true">いいね取り消し</button>
+        <button type="button" class="like-button" id="like-button-{{ tweet.id }}" data-tweet-id="{{ tweet.id }}" data-liked="true">
+            <i class="fas fa-heart"></i> いいね取り消し
+        </button>
         {% else %}
-        <button type="button" class="like-button" id="like-button-{{ tweet.id }}" data-tweet-id="{{ tweet.id }}" data-liked="false">いいね</button>
+        <button type="button" class="like-button" id="like-button-{{ tweet.id }}" data-tweet-id="{{ tweet.id }}" data-liked="false">
+            <i class="far fa-heart"></i> いいね
+        </button>
         {% endif %}
     </div>
     {% endfor %}
