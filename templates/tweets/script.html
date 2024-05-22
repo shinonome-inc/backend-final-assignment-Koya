@@ -1,0 +1,52 @@
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const getCookie = (name) => {
+            if (document.cookie && document.cookie !== '') {
+                for (const cookie of document.cookie.split(';')) {
+                    const [key, value] = cookie.trim().split('=');
+                    if (key === name) {
+                        return decodeURIComponent(value);
+                    }
+                }
+            }
+            return null;
+        };
+    
+        const csrftoken = getCookie('csrftoken');
+    
+        const toggleLike = (tweetId) => {
+            const likeButton = document.querySelector(`#like-button-${tweetId}`);
+            const likeCount = document.querySelector(`#like-count-${tweetId}`);
+            const liked = likeButton.getAttribute('data-liked') === 'true';
+            const url = liked ? `/tweets/${tweetId}/unlike/` : `/tweets/${tweetId}/like/`;
+    
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken,
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    likeCount.textContent = `${data.total_likes} 件のいいね`;
+                    // ボタンのテキストを更新する部分をハートアイコンに変更
+                    likeButton.innerHTML = data.is_liked ? '<i class="fas fa-heart"></i> いいね取り消し' : '<i class="far fa-heart"></i> いいね';
+                    likeButton.setAttribute('data-liked', data.is_liked ? 'true' : 'false');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        };
+    
+        document.querySelectorAll('.like-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const tweetId = button.getAttribute('data-tweet-id');
+                toggleLike(tweetId);
+            });
+        });
+    });
+    </script>
+    

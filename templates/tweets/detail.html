@@ -5,9 +5,12 @@
 <form action="" method="tweets">
     {% csrf_token %}
     {{ form.as_p }}
-    <p>ユーザー名: {{ user.username }}</p>
+    <p>ユーザー名: {{ tweet.user.username }}</p>
+    <li><a href="{% url 'accounts:user_profile' tweet.user.username %}">ユーザープロフィール</a></li>
     <p>内容: {{ tweet.content }}</p>
     <p>時間: {{ tweet.created_at }}</p>
 </form>
-<a href="{% url 'tweets:delete' tweet.pk %}">ツイートの削除</a>
+{% if user == tweet.user %}
+    <a href="{% url 'tweets:delete' tweet.pk %}">ツイートの削除</a>
+{% endif %}
 {% endblock %}

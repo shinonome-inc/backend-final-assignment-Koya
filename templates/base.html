@@ -1,18 +1,25 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
   <meta charset="UTF-8">
   <title>{% block title %}Twitter Clone{% endblock %}</title>
+    <!-- 他のスタイルシートやスクリプトの後にFont AwesomeのCDNを追加 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 
 <body>
   <!-- header -->
   <header class="mb-3">
     <ul>
-      <li><a href="{% url 'tweets:home' %}">Twitter Clone</a></li>
+      <li><a href="{% url 'tweets:home' %}">home</a></li>
     {% if user.is_authenticated %}
-    <li><a href="{% url 'accounts:logout' %}">logout</a></li>
+    <li>
+      <form action="{% url 'accounts:logout' %}" method="POST">
+      {% csrf_token %}
+      <button type="submit" style="border: none; background: none; padding: 0; text-decoration: underline; cursor: pointer;">logout</button>
+      </form>
+    </li>
+    </form></li>
     <li><a href="{% url 'tweets:create' %}">Create Tweet</a></li>
     <li><a href="{% url 'accounts:user_profile' request.user %}">あなたのプロフィール</a></li>
     {% else %}
@@ -26,6 +33,7 @@
   <!-- main -->
   {% block content %}
   {% endblock %}
+
   <!-- /main -->
 </body>
 </html>
