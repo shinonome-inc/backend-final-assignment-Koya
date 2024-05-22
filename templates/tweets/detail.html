@@ -6,7 +6,7 @@
     {% csrf_token %}
     {{ form.as_p }}
     <p>ユーザー名: {{ tweet.user.username }}</p>
-    <li><a href="{% url 'accounts:user_profile' tweet.user %}">ユーザープロフィール</a></li>
+    <li><a href="{% url 'accounts:user_profile' tweet.user.username %}">ユーザープロフィール</a></li>
     <p>内容: {{ tweet.content }}</p>
     <p>時間: {{ tweet.created_at }}</p>
 </form>

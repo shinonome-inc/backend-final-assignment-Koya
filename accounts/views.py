@@ -45,13 +45,19 @@ class UserProfileView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["profile_user"] = self.profile_user
-        user_following_friendships = Friendship.objects.filter(follower=self.request.user)
-        context["user_following"] = [friendship.following for friendship in user_following_friendships]
-        context["following_number"] = Friendship.objects.filter(follower=self.profile_user).count()
-        context["follower_number"] = Friendship.objects.filter(following=self.profile_user).count()
-        user_likes = Like.objects.filter(likeuser=self.request.user).values_list("liketweet_id", flat=True)
+        user_following_friendships = list(
+            Friendship.objects.filter(follower=self.request.user).select_related("following")
+        )
+        user_following = [friendship.following for friendship in user_following_friendships]
+        following_number = Friendship.objects.filter(follower=self.profile_user).count()
+        follower_number = Friendship.objects.filter(following=self.profile_user).count()
+        user_likes = set(Like.objects.filter(likeuser=self.request.user).values_list("liketweet_id", flat=True))
+        context["user_following"] = user_following
+        context["following_number"] = following_number
+        context["follower_number"] = follower_number
         for tweet in context["tweets"]:
             tweet.liked_by_user = tweet.id in user_likes
+
         return context
 
 
